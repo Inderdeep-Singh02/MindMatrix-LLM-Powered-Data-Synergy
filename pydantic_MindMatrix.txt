@@ -1,0 +1,51 @@
+class CSVData(BaseModel):
+    data: List[List[Union[str, int, float]]]
+
+    @validator("data", each_item=True)
+    def ensure_valid_rows(cls, v):
+        if not isinstance(v, list):
+            raise ValueError("Each row must be a list")
+        for item in v:
+            if not isinstance(item, (str, int, float)):
+                raise ValueError("All items in a row must be either strings or integers")
+        return v
+
+
+
+class ConfusionMatrixImage(BaseModel):
+    url: AnyUrl
+
+class Value(BaseModel):
+    HPO: str
+    acc: constr(regex=r"^\d+[.]*\d*$")  
+    loss: constr(regex=r"^\d+[.]*\d*$")  
+    confusion_matrix: ConfusionMatrixImage | None = None  
+
+class JSONData(BaseModel):
+    model: str
+    is_classification: bool  
+    value: Value
+
+    @validator("is_classification")
+    def validate_is_classification(cls, v):
+        if not isinstance(v, bool):
+            raise ValueError("is_classification must be a boolean")
+        return v
+
+    @validator("value.confusion_matrix", always=True)
+    def validate_confusion_matrix_presence(cls, v, values):
+        if values["is_classification"] and v is None:
+            raise ValueError("Confusion matrix required for classification models")
+        if not values["is_classification"] and v is not None:
+            raise ValueError("Confusion matrix unexpected for non-classification models")
+        return v
+
+
+class HTMLContent(BaseModel):
+    content: str
+
+    @validator("content", pre=True)
+    def ensure_root_tag(cls, v):
+        if not v.startswith("<"):
+            raise ValueError("Content must start with an HTML tag")
+        return v
