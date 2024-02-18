@@ -24,7 +24,7 @@
 
         iframe {
             width: 100%;
-            height: 80vh; /* Adjust the height as needed */
+            height: 80vh; 
             border: none;
         }
 
@@ -57,48 +57,78 @@
             border-radius: 4px;
         }
 
+        
+
         button {
-            background-color: #4caf50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+            box-shadow: inset 0px 1px 0px 0px #ededed;
+            background: linear-gradient(to bottom, #4db826 5%, #08bf1a 100%);
+            background-color: #05da2f;
+            border-radius: 6px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
             cursor: pointer;
-            font-size: 16px;
+            color: #666666;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 3px 13px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #ffffff;
         }
 
-        button:hover {
-            background-color: #45a049;
+        button:enabled,
+        button[enabled] {
+            background: linear-gradient(to bottom, #4caf50 5%, #45a049 100%);
+            background-color: #4caf50;
+            color: white;
         }
 
         button:disabled,
-        button[disabled]{
-        border: 1px solid #999999;
-        background-color: #cccccc;
-        color: #666666;
+        button[disabled] {
+            box-shadow: inset 0px 1px 0px 0px #999999;
+            background: linear-gradient(to bottom, #cccccc 5%, #999999 100%);
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+
+        .error-box {
+            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
+
+    {% if error_message %}
+    <div class="error-box">
+        {{ error_message }}
+    </div>
+    {% endif %}
+    
     <h1>MindMatrix</h1>
     <h2>Upload CSV File</h2>
-    <form action="/api/EdaVis/" method="post" enctype="multipart/form-data">
+    
+    <form action="/api/meta_visual/" method="post" enctype="multipart/form-data">
         <label for="csvFile">Choose a CSV file:</label>
         <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
         <br>
-        <button type="submit" id="uploadButton">Upload</button>
+        <button class="enabled" type="submit" id="uploadButton">Upload</button>
     </form>
 
-    <!-- Embed the HTML content from the visual endpoint using the {{ report_html }} variable -->
+    
+
     <div id="viewButtonContainer">
-        <button class="{% if report_html %}{% else %}disabled{% endif %}" id="viewButton" {% if not report_html %}disabled{% endif %} onclick="viewHtml()">View HTML</button>
+        <button class="{% if report_html %}enabled{% else %}disabled{% endif %}" id="viewButton" {% if not report_html %}disabled{% endif %} onclick="viewHtml()">View HTML</button>
     </div>
 
     <div id="reportHtmlContainer" style="display: none;">
         {{ report_html | safe }}
     </div>
 
-    
 
     <script>
         function viewHtml() {
