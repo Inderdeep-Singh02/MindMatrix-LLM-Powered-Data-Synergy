@@ -1,12 +1,13 @@
-FROM python:3.8
+FROM python:3.9-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+COPY requirements.txt .
 
-EXPOSE 8000
-EXPOSE 8501
+RUN pip install -r requirements.txt
 
 COPY . .
-CMD ["uvicorn", "manage:app", "--host","0.0.0.0", "--port","8000"]
+
+EXPOSE 8000
+
+CMD ["uvicorn", "manage:app", "--host", "0.0.0.0", "--port", "8000"]
