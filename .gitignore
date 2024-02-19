@@ -1,0 +1,16 @@
+# python cache
+_pycache_
+.mypy_cache
+.pytest_cache
+
+# venv
+venv
+.env
+
+# IDE
+.idea
+.vscode
+
+# other
+notes.md
+.coverage
