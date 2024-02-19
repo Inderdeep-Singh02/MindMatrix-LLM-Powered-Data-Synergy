@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    build: .
+    image: isadeep/mindmatrix:v1.0
     container_name: api
     ports:
       - "8000:8000"
