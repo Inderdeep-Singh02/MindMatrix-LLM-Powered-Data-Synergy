@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 async def sweetVisual(df):
     report = sv.analyze(df)
     report_html_path = "sweetviz_report.html"
-    # report.show_html(report_html_path)
+    report.show_html(report_html_path,open_browser=False)
 
     with open(report_html_path, "r", encoding="utf-8") as report_file:
         soup = BeautifulSoup(report_file, "html.parser")

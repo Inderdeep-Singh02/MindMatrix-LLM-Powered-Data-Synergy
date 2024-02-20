@@ -40,8 +40,6 @@ async def visual(request: Request, csvFile: UploadFile = File(...)):
             "meta_data": meta_data
         }
 
-        print(type(response_data))
-
         return JSONResponse(content=response_data)
     except HTTPException as e:
         return JSONResponse(content={"error_message": str(e.detail)})

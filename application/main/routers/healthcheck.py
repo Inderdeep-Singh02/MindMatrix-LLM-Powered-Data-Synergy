@@ -5,4 +5,4 @@ router = APIRouter(prefix='/health-check')
 
 @router.get('/')
 async def healthcheck():
-    return JSONResponse(content={"message": "MindMatrix"}, status_code=200)
+    return JSONResponse(content={"message": "MindMatrix"}, status_code=200) 
