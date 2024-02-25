@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Request, File, UploadFile, HTTPException
 
@@ -39,8 +39,6 @@ async def visual(request: Request, csvFile: UploadFile = File(...)):
             "report_html": report_html,
             "meta_data": meta_data
         }
-
-        print(type(response_data))
 
         return JSONResponse(content=response_data)
     except HTTPException as e:

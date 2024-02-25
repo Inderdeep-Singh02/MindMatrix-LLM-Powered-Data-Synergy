@@ -1,5 +1,5 @@
 # python cache
-_pycache_
+_pycache__/
 .mypy_cache
 .pytest_cache
 
