@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from application.main.utils.preprocessing.outlier import remove_outliers
 
-def reg_preprocessing(df, target=None):
+def regression_preprocessing(df, target=None):
     categorical_columns = df.select_dtypes(include=['object']).columns
     label_encoded_columns = []
 
@@ -13,7 +13,7 @@ def reg_preprocessing(df, target=None):
 
     df.drop_duplicates(inplace=True)
     df.fillna(df.mean(), inplace=True)
-
+    
     if isinstance(target, str):
         target_column = target
         target_index = df.columns.get_loc(target_column)
@@ -24,7 +24,8 @@ def reg_preprocessing(df, target=None):
         raise ValueError("Invalid target specification. Provide either column name or index.")
 
 
-    numeric_columns = df.select_dtypes(exclude=['object']).columns.difference(label_encoded_columns)
+    numeric_columns = df.select_dtypes(exclude=['object']).columns.difference(label_encoded_columns).difference([target_column])
+
     df[numeric_columns] = StandardScaler().fit_transform(df[numeric_columns])
 
     result_df = pd.DataFrame(df, columns=df.columns)
