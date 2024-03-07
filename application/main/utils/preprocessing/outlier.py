@@ -16,3 +16,4 @@ def remove_outliers(df, threshold=5.0):
     df = df[~df.isin(columns_to_remove)]
     
     return df
+

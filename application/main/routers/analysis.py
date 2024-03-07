@@ -29,7 +29,7 @@ templates = Jinja2Templates(directory="./application/main/static/templates")
 #         )
     
 @router.post("/")
-async def visual(request: Request, csvFile: UploadFile = File(...)):
+async def visual(csvFile: UploadFile = File(...)):
     try:
         df = await dataframe(csvFile=csvFile)
         report_html = await sweetVisual(df)
