@@ -4,22 +4,6 @@ import io
 import csv
 from io import StringIO
 
-# async def dataframe(csvFile):  
-#     if not csvFile.filename.endswith(".csv"):
-#             raise HTTPException(status_code=400, detail="Only CSV files are allowed")
-#     content = await csvFile.read()
-#     df = pd.read_csv(io.BytesIO(content))
-#     return df
-
-
-# async def read_csv_with_fallback(file_like_object, delimiter, quotechar):
-#     try:
-#         df = pd.read_csv(file_like_object, delimiter=delimiter, quotechar=quotechar)
-#     except pd.errors.ParserError:
-#         raise HTTPException(status_code=400, detail="Failed to parse CSV file")
-
-#     return df
-
 async def read_csv_with_fallback(file_like_object, delimiter, quotechar='"'):
     try:
         df = pd.read_csv(file_like_object, sep=delimiter, quotechar=quotechar)
@@ -44,5 +28,6 @@ async def dataframe(csvFile):
         # df = pd.concat(df, ignore_index=True)
         # print(df)
 
-
     return df
+
+
