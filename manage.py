@@ -11,7 +11,7 @@ def get_application():
     _app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
-        allow_credentials=False,
+        allow_credentials=False,    
         allow_methods=["*"],
         allow_headers=["*"],
     )

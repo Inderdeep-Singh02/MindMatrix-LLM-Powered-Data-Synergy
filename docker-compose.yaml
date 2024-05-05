@@ -2,8 +2,10 @@ version: '3.8'
 
 services:
   api:
-    image: isadeep/mindmatrix:v2.1
-    # build: .
+    # image: isadeep/mindmatrix:v3.3
+    build: .
     container_name: back
     ports:
       - "8000:8000"
+
+

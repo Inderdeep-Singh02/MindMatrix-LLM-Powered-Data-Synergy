@@ -41,7 +41,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 import re
-from application.main.utils.preprocessing.outlier import remove_outliers
+from application.main.utils.preprocessing.remove_outlier import remove_outliers
 
 pd.options.mode.chained_assignment = None
 
