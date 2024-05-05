@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMatrix - CSV File Upload</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        iframe {
+            width: 100%;
+            height: 80vh; 
+            border: none;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        
+
+        button {
+            box-shadow: inset 0px 1px 0px 0px #ededed;
+            background: linear-gradient(to bottom, #4db826 5%, #08bf1a 100%);
+            background-color: #05da2f;
+            border-radius: 6px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #666666;
+            font-family: Arial;
+            font-size: 10px;
+            padding: 3px 13px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #ffffff;
+        }
+
+        button:enabled,
+        button[enabled] {
+            background: linear-gradient(to bottom, #4caf50 5%, #45a049 100%);
+            background-color: #4caf50;
+            color: white;
+        }
+
+        button:disabled,
+        button[disabled] {
+            box-shadow: inset 0px 1px 0px 0px #999999;
+            background: linear-gradient(to bottom, #cccccc 5%, #999999 100%);
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+        }
+
+        .error-box {
+            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    {% if error_message %}
+    <div class="error-box">
+        {{ error_message }}
+    </div>
+    {% endif %}
+    
+    <h1>MindMatrix</h1>
+    <h2>Upload CSV File</h2>
+    
+    <form action="/api/preprocess" method="post" enctype="multipart/form-data">
+        <label for="csvFile">Choose a CSV file:</label>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+        <input type="number" id="target" name="target" >
+        <br>
+        <button class="enabled" type="submit" id="uploadButton">Upload</button>
+    </form>
+
+    
+
+    <div id="viewButtonContainer">
+        <button class="{% if report_html %}enabled{% else %}disabled{% endif %}" id="viewButton" {% if not report_html %}disabled{% endif %} onclick="viewHtml()">View HTML</button>
+    </div>
+
+    <div id="reportHtmlContainer" style="display: none;">
+        {{ report_html | safe }}
+    </div>
+
+
+    <script>
+        function viewHtml() {
+            document.getElementById('reportHtmlContainer').style.display = 'block';
+        }
+    </script>
+
+   
+
+</body>
+</html>

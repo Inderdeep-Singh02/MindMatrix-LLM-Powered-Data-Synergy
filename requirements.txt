@@ -1,0 +1,14 @@
+fastapi==0.105.0
+uvicorn
+pandas
+numpy
+python-multipart
+sweetviz
+beautifulsoup4
+scikit-learn
+python-dotenv
+langchain==0.1.16
+python-dotenv==1.0.1
+regex
+langchain-openai==0.0.8
+seaborn
