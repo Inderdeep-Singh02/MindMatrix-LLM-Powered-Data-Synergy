@@ -7,19 +7,19 @@
 - Streamlined and efficient workflow
 ## Installation
 - Step 1: Clone the Repository
- - git clone https://github.com/your-username/MindMatrix-LLM-Powered-Data-Synergy.git
- - cd MindMatrix-LLM-Powered-Data-Synergy
+  - git clone https://github.com/your-username/MindMatrix-LLM-Powered-Data-Synergy.git
+  - cd MindMatrix-LLM-Powered-Data-Synergy
 - Step 2: Install Dependencies
- - pip install -r requirements.txt
+  - pip install -r requirements.txt
 ## Configuration
 - Step 3: Set Up Environment Variables
- - Create a .env file in the root directory of the project and add the following lines:
+  - Create a .env file in the root directory of the project and add the following lines:
 
 ## env
 - BASE_URL="https://openrouter.ai/api/v1"
- - LLM_KEY
+  - LLM_KEY
 
 ## Running the Application
 - Step 4: Start the FastAPI Server
- - Locate and run the manage.py file:
+  - Locate and run the manage.py file:
 
