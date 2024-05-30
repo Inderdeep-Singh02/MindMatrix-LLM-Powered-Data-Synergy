@@ -14,11 +14,11 @@
 ## Configuration
 - Step 3: Set Up Environment Variables
   - Create a .env file in the root directory of the project and add the following lines:
-  - env
     - BASE_URL="https://openrouter.ai/api/v1"
     - LLM_KEY
 
 ## Running the Application
 - Step 4: Start the FastAPI Server
   - Locate and run the manage.py file:
+  - bash: python manage.py
 
