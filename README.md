@@ -1,5 +1,5 @@
 ## MindMatrix: LLM-Powered Data Synergy
-- MindMatrix leverages Large Language Models (LLMs) to revolutionize data preprocessing by extracting crucial context from datasets. By integrating LLMs, we set new standards for automated data preprocessing and - model selection, ensuring a more informed and efficient workflow.
+- MindMatrix leverages Large Language Models (LLMs) to revolutionize data preprocessing by extracting crucial context from datasets. By integrating LLMs, we set new standards for automated data preprocessing and model selection, ensuring a more informed and efficient workflow.
 
 ## Features
 - Enhanced data preprocessing with LLMs
