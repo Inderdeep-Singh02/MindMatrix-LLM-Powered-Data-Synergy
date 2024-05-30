@@ -12,3 +12,4 @@ python-dotenv==1.0.1
 regex
 langchain-openai==0.0.8
 seaborn
+# tensorflow

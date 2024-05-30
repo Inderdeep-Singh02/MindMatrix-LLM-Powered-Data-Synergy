@@ -2,6 +2,8 @@ from fastapi import APIRouter, File, UploadFile, HTTPException, Form, Body
 from fastapi.responses import JSONResponse
 from typing import List
 from application.main.utils.models.model_pipe import model_pipe
+# from application.main.utils.models.neural_network import train_and_evaluate_ann
+
 # from application.main.utils.dataframe import dataframe
 from application.main.utils.meta_data import extract_metadata
 from application.main.utils.preprocessing.pre_pipe import preprocessing_pipe
@@ -22,9 +24,10 @@ async def model(csv_data: List[List]): #csv_data: List[List]csvFile: UploadFile=
     try:
         df = await dataframe(csv_data)
         meta_data = extract_metadata(df)
-        # df = await preprocessing_pipe(df, target)     
+        # df = await preprocessing_pipe(df, target)  
+        # train_and_evaluate_ann(df)   
         result = await model_pipe(df, meta_data)
-
+    
         return JSONResponse(content={"result": result})
     
     except HTTPException as e:

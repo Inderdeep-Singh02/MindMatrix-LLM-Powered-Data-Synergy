@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split, GridSearchCV, KFold
 from sklearn.metrics import accuracy_score, r2_score, mean_squared_error, mean_absolute_error, confusion_matrix 
+from sklearn.metrics import f1_score, precision_score, recall_score
 import matplotlib
 from sklearn.preprocessing import StandardScaler
 from typing import List
@@ -36,6 +37,14 @@ Provide 5 names of the most suitable model based on the provided metadata and th
 
 # TODO: add reflection
 
+def format_floats(obj):
+        if isinstance(obj, float):
+            return f"{obj:.2f}"
+        elif isinstance(obj, list):
+            return [format_floats(item) for item in obj]
+        else:
+            return obj
+        
 class BaseModel:
     def __init__(self, models, classification_flag):
         self.models = models
@@ -43,28 +52,61 @@ class BaseModel:
         self._scaler = StandardScaler() if not classification_flag else None
         self.evaluation_results = []
 
+    
+    
+
     async def evaluate_model(self, X_train, X_test, y_test):
         y_pred = self.model.predict(X_test)
+        # performance_metrics = {
+        #     'accuracy': accuracy_score,
+        #     'r2': r2_score,
+        #     'mse': mean_squared_error,
+        #     'mae': mean_absolute_error
+        # }
         performance_metrics = {
-            'accuracy': accuracy_score,
-            'r2': r2_score,
-            'mse': mean_squared_error,
-            'mae': mean_absolute_error
-        }
+        'accuracy': accuracy_score,
+        'f1': f1_score,
+        'precision': precision_score,
+        'recall': recall_score,
+        'r2': r2_score,
+        'mse': mean_squared_error,
+        'mae': mean_absolute_error
+    }
         
+        # if self.classification_flag:
+        #     performance_metrics.pop('r2')  
+        # else:
+        #     performance_metrics.pop('accuracy') 
         if self.classification_flag:
-            performance_metrics.pop('r2')  
+            performance_metrics.pop('r2')
+            performance_metrics.pop('mse')
+            performance_metrics.pop('mae')
         else:
-            performance_metrics.pop('accuracy')  
+            performance_metrics.pop('accuracy')
+            performance_metrics.pop('f1')
+            performance_metrics.pop('precision')
+            performance_metrics.pop('recall') 
+
+        # evaluation_results = {}
+        # for metric_name, metric_func in performance_metrics.items():
+        #     if metric_name == 'mse' or metric_name == 'mae':
+        #         performance = metric_func(y_test, y_pred)
+        #     else:
+        #         performance = metric_func(y_test, y_pred)
+                    
+        #     evaluation_results[metric_name] = performance
 
         evaluation_results = {}
+        # for metric_name, metric_func in performance_metrics.items():
+        #     performance = metric_func(y_test, y_pred)
+        #     evaluation_results[metric_name] = f"{performance:.3f}" if isinstance(performance, float) else performance
+        # evaluation_results = {}
         for metric_name, metric_func in performance_metrics.items():
-            if metric_name == 'mse' or metric_name == 'mae':
-                performance = metric_func(y_test, y_pred)
+            if metric_name in ['f1', 'precision', 'recall']:
+                performance = metric_func(y_test, y_pred, average='weighted')
             else:
                 performance = metric_func(y_test, y_pred)
-            
-            evaluation_results[metric_name] = performance
+            evaluation_results[metric_name] = f"{performance:.3f}" if isinstance(performance, float) else performance
         
         try:
             if self.classification_flag:
@@ -97,8 +139,16 @@ class BaseModel:
 
             self.model = grid_search.best_estimator_
             self.best_parameters = grid_search.best_params_
-            # self.res = json.dumps(grid_search.cv_results_)
-            self.res = json.dumps({key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in grid_search.cv_results_.items()})
+            
+            # self.res = json.dumps({key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in grid_search.cv_results_.items()})
+            
+            # Format all float values in the dictionary to two decimal places
+            formatted_results = {
+            key: format_floats(value.tolist() if isinstance(value, np.ndarray) else value)
+            for key, value in grid_search.cv_results_.items()
+            }
+
+            self.res = json.dumps(formatted_results, indent=4)
 
 
             result = await self.evaluate_model(X_train, X_test, y_test)
@@ -115,8 +165,6 @@ class BaseModel:
         plt.title(f"{self.model.__class__.__name__} Confusion Matrix")
         
         buffer = io.BytesIO()
-        print("buffer:", buffer)
-        print(buffer.read())
         plt.savefig(buffer, format='png')
         buffer.seek(0)
         performance_graph = base64.b64encode(buffer.getvalue()).decode()
@@ -127,30 +175,6 @@ class BaseModel:
    
     def generate_actual_vs_prediction_graph(self, X_train, X_test, y_train, y_test, y_pred):
         
-        # plt.figure(figsize=(8, 6))
-        # plt.scatter(np.arange(len(y_test)), y_test, color = 'red', marker = 'o', s = 35, alpha = 0.5,
-        # label = 'Test data')
-        # plt.plot(y_train, y_pred, color = 'blue', label='Model Plot')
-        
-        # plt.xlabel('X')
-        # plt.ylabel('Y')
-        # plt.title(f"{self.model.__class__.__name__} Performance")
-        # plt.legend()
-
-        # buffer = io.BytesIO()
-        # plt.savefig(buffer, format='png')
-        # buffer.seek(0)
-        # performance_graph = base64.b64encode(buffer.getvalue()).decode()
-        # plt.close()
-
-        # plt.figure(figsize=(10, 6))
-        # plt.title("Actual vs Predicted Values")
-        # plt.xlabel('Index')
-        # plt.ylabel('Value')
-        # plt.plot(y_test[:len(y_pred)], label="Actual Values")  
-        # plt.plot(y_pred, label="Predicted Values")
-        # plt.title(f"{self.model.__class__.__name__} Performance")
-        # plt.legend()
         plt.figure(figsize=(10,10))
         plt.scatter(y_test, y_pred, c='crimson')
         plt.yscale('log')
@@ -189,7 +213,7 @@ async def model_pipe(df, meta_data):
     input_var = {'y': meta_data_str, 'z': models_instance.models}
 
     llm = BaseAgent()
-    model = llm.load_openrouter_chat_model("google/gemma-7b-it:free")
+    model = llm.load_openrouter_chat_model("openai/gpt-4-turbo") #"meta-llama/llama-3-8b-instruct:free" "google/gemma-7b-it:free"
     input_variables = ['y', 'z']
     prompt_template = await llm.load_prompt_template(prompt=prompt_template_model, input_variables=input_variables)
     output = await llm.run_chat_model_instruct(chat_model=model, prompt_template=prompt_template, input_variables=input_var)
@@ -201,9 +225,11 @@ async def model_pipe(df, meta_data):
 
     matches = pattern.findall(output)
     model_list = [re.sub(r'[^a-zA-Z0-9]+', '', match) for match in matches]
+    model_list=[]
 
     if len(model_list) < 5:
         remaining_models = random.sample([model for model in model_pool if model not in model_list], 5 - len(model_list))
+        # remaining_models = model_pool[:5]
         model_list += remaining_models
     elif len(model_list) > 5:
         model_list = model_list[:5]

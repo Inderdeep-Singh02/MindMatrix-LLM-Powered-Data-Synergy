@@ -25,8 +25,7 @@ REFUSAL_PHRASES: List[str] = [
 ]
 
 ANSWER_KEY = ">ANS:"
-ANSWER_KEY_PATTERN = "ANS:"
-
+ANSWER_KEY_PATTERN = ">ANS:"
 
 class BaseAgent:
     verbose: bool
@@ -54,7 +53,7 @@ class BaseAgent:
     #     )
 
 
-    def parse_reflection_response(self, response: str) -> str:
+    def parse_reflection_response(self, response: str, ANSWER_KEY_PATTERN: str) -> str:
         """Parses the response from the model to find the answer."""
         answer = ""
         match = re.search(f"{ANSWER_KEY_PATTERN}(.*)", response, re.IGNORECASE)
@@ -92,7 +91,7 @@ class BaseAgent:
                 if self.check_refusal_response(response):
                     retries += 1
                 elif use_reflection:
-                    response = self.parse_reflection_response(response)
+                    response = self.parse_reflection_response(response, ANSWER_KEY_PATTERN)
                     if not response:
                         retries += 1
                     else:
@@ -110,6 +109,7 @@ class BaseAgent:
         chat_model: BaseChatModel,
         prompt_template: PromptTemplate,
         input_variables: dict,
+        # ANSWER_KEY_PATTERN: str,
         use_reflection: Optional[bool] = False,
     ) -> str:
         """Runs a ChatModel in 'instruct' mode. This mode is just one user message (prompt)."""
